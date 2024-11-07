@@ -1,0 +1,10 @@
+"""{
+            "scenario_name" : "scenario_1",
+            "plan_name" : "plan_1",
+            "start" : {"P" : "True", "Q" : "True"},
+            "sequence" :
+                        [
+                            {"action" : "A1" , "state_change" : {"Q" : "False"}},
+                            {"action" : "A2" , "state_change" : {"P" : "False"}}
+                        ]
+        }"""

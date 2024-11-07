@@ -1,0 +1,23 @@
+"""{
+            "plan_name" : "Plan1",
+            "plan" :
+                {
+                    "start" : {"P" : "True", "Q" : "True"},
+                    "goal" : {"P" : "False"},
+                    "sequence":
+                        [
+                            {"action" : "A1", "precondition" : {"P" : "True", "Q" : "True"}, "effect" : {"Q" : "False"}},
+                            {"action" : "A2", "precondition" :  {"Q" : "False"}, "effect" :  {"P" : "False"}}
+                        ]
+                },
+            "execution" :
+                {
+                    "start" : {"P" : "True", "Q" : "True"},
+
+                    "sequence" :
+                        [
+                            {"action" : "A1" , "state_change" : {"Q" : "False"}},
+                            {"action" : "A2" , "state_change" : {"P" : "False"}}
+                        ]
+                }
+}"""
