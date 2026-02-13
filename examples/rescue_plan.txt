@@ -1,0 +1,22 @@
+{
+                    "plan_name" : "rescue_plan",
+                    "start" : {"bay_empty" : "True", "in_air" : "False"},
+                    "goal" : {"hikers_w_medkit" : "True"},
+                    "sequence":
+                        [{"action" : "launch",
+                            "precondition" : {"in_air" : "False"},
+                            "effect" : {"in_air" : "True"}},
+                         {"action" : "fly_to_medkit",
+                            "precondition" : {"in_air" : "True"},
+                            "effect" : {"near_medkit" : "True"}},
+                         {"action" : "pickup_medkit",
+                            "precondition" :  {"near_medkit" : "True", "bay_empty" : "True"},
+                            "effect" :  {"has_medkit" : "True", "bay_empty" : "False"}},
+                         {"action" : "fly_to_hikers",
+                            "precondition" :  {"in_air" : "True"},
+                            "effect" :  {"near_hikers" : "True"}},
+                         {"action" : "drop_medkit",
+                            "precondition" :  {"has_medkit" : "True", "near_hikers" : "True"},
+                            "effect" : {"hikers_w_medkit" : "True"}}
+                        ]
+}

@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "file:///~/Pycharm/Projects/robustExecution/robust-execution/json-schemas/plan.schema.json",
+  "title": "Plan",
+  "description": "A json object denoting a grounded PDDL plan",
+  "type": "object",
+  "properties": {
+    "plan_name": {
+      "description": "A unique identifier for the plan.",
+      "type": "string"
+    },
+    "start": {
+      "description": "Plan's start state.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Variable name.",
+            "type": "string"
+          },
+          "domain": {
+            "description": "Values that variable can be assigned.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "name",
+          "domain"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "goal": {
+      "description": "Plan goal propositions.",
+      "type": "string"
+    },
+    "constraints": {
+      "description": "Problem's constraints, each defined over a subset of scope.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Constraint name.",
+            "type": "string"
+          },
+          "scope": {
+            "description": "Variable that constraint assigns.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "relation": {
+            "description": "Assignments to scope and their corresponding value.",
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "name",
+          "scope",
+          "relation"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "required": ["plan_name", "start", "goal", "sequence"]
+}

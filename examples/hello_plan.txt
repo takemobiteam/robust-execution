@@ -1,0 +1,10 @@
+{
+                "plan_name" : "plan_1",
+                "start" : {"P" : "True", "Q" : "True"},
+                "goal" : {"P" : "False"},
+                "sequence":
+                        [
+                            {"action" : "A1", "precondition" : {"P" : "True", "Q" : "True"}, "effect" : {"Q" : "False"}},
+                            {"action" : "A2", "precondition" :  {"Q" : "False"}, "effect" :  {"P" : "False"}}
+                        ]
+}
