@@ -104,7 +104,7 @@ class Dispatcher:
                 return completed, monitor.current_state, successp, conflicts
 
             # 5) Action produced the desired effect.
-            # #  Recoding as successfully completed actions.
+            # #  Recording as successfully completed actions.
             self.completed_actions.append(action)
             completed = self.completed_actions
 
