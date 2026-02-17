@@ -24,16 +24,22 @@ class Dispatcher:
     completed_actions = []
 
     def __init__(self, name: str, total_order_plan: TotalOrderPlan, trace = True):
-        self.bot = bot.Bot(name, False, False)
+
         self.total_order_plan = total_order_plan
         self.trace = trace
 
-        # Get the plan to dispatch and setup the monitor for the plan.
+        # Get the plan that is to be dispatched.
         par = total_order_plan.partial_order_plan
+
+        # Enable the plan's start action, since it has no preconditions.
+        self.enabled_actions = [par.start_action]
+
+        # Setup the monitor for the plan.
         self.monitor = lm.CausalLinkMonitor(total_order_plan)
 
-        # The start action is enabled, since it has no preconditions.
-        self.enabled_actions = [par.start_action]
+        # Setup the physical robot that performs the plan actions,
+        # and connect to the monitor that observes the action effects.
+        self.bot = bot.Bot(name, self.monitor, False, False)
 
     def dispatch_scenario(self, scenario: es.ExecutionScenario):
         # Dispatch plan while comparing against the action and observation sequence
@@ -61,10 +67,11 @@ class Dispatcher:
             print(f'Executing {self.total_order_plan.partial_order_plan.name}:')
 
         while True:
-            # 1) Select an enabled action to execute next and
-            #    inform monitor that its about to be executed.
-            #    Monitor removes the active causal links that action consumes.
+            # 1) Select an enabled action to execute next.
             action = b.select_enabled_action(self.enabled_actions)
+
+            # 2) Inform monitor that action is about to be executed.
+            #    - Monitor removes the active causal links that action consumes.
             if action is None:  # None if no enabled actions remain.
                 break  # End the plan dispatch.
             else:
@@ -72,28 +79,23 @@ class Dispatcher:
                     print()
                     print(f'   Next action {action}.')
 
-                monitor.action_about_to_start(action)
+                monitor.monitor_action_start(action)
 
-            # 2) Execute the action.
-            b.execute_action(action)
+            # 2) Execute the action
+            #    Checks for violations with active causal links while the action is being executed.
+            successp, conflicts = b.execute_action(action, successp, conflicts)
 
-            # 3) Observe the state change once the action is completed
-            #    and ask monitor to check this state change against the active links.
-            #    - This only needs to check states changes, not the complete state.
-            #    - The active links DO NOT include the links produced by action,
-            #      which are handled in the next step.
-            changes = b.observe_state_change(monitor.current_state)
-            successp, conflicts = monitor.check_state_change(changes, successp, conflicts)
             if not successp:
                 if self.trace:
-                    print(f'      Produces conflicts {ut.list2string(conflicts)}.')
+                    print(f'      Execution produces conflicts {ut.list2string(conflicts)}.')
 
                 return completed, monitor.current_state, successp, conflicts
 
-            # 4) Ask monitor to update active links with the links produced by action's effects.
-            #    check all assignments in the current state against the new active links.
+            # 3) Inform monitor that action has completed.
+            #    - Monitor updates active links with the links produced by action's effects.
+            #    - Check assignments in the current state against the new active links.
             #    - This only checks the newly added links against state, not all links.
-            successp, conflicts = monitor.check_completed_action(action, successp, conflicts)
+            successp, conflicts = monitor.monitor_completed_action(action, successp, conflicts)
 
             #    - Action didn't produce the intended effect, terminate plan dispatch
             #      and return conflicts.
@@ -103,8 +105,8 @@ class Dispatcher:
 
                 return completed, monitor.current_state, successp, conflicts
 
-            # 5) Action produced the desired effect.
-            # #  Recording as successfully completed actions.
+            # 4) Action produced the desired effect.
+            #  - Record that action succeeded.
             self.completed_actions.append(action)
             completed = self.completed_actions
 
@@ -125,7 +127,8 @@ class Dispatcher:
             self.enabled_actions.remove(action)
             self.enabled_actions.extend(enabled_successors)
 
-        # Reached end of plan.  Return with success.
+        # 5) End of plan reached.
+        #  - Return with success.
         if self.trace:
                 print('   Plan dispatch ended with {complete} completed.')
 

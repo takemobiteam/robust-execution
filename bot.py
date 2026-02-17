@@ -1,6 +1,8 @@
 import utils.utils as ut
 import actionmodel.statespace as ss
 import planexecution.executionscenario as es
+import planexecution.planmonitor as lm
+import plancompilation.partialorderplan as pp
 
 # A physical (ro)Bot that mediates between the environment
 # and agent (a homunculus).
@@ -15,14 +17,24 @@ class Bot:
     # API for a “physical” agent that observes state,
     # chooses an enabled action and dispatches.
 
-    def __init__(self, name: str, ask_selection: bool, ask_completion: bool, trace = True) -> None:
+    def __init__(self, name: str,
+                 monitor: lm.CausalLinkMonitor,
+                 ask_selection: bool,
+                 ask_completion: bool,
+                 trace = True) -> None:
         self.name = name
+        self.monitor = monitor  # Robot's plan monitor
 
-        # If True, ask user to select one of the enabled actions.
+        # If True, when an enabled action is request,
+        # will ask the user to select one.
         self.ask_user_to_select_actionp:bool = ask_selection
-        # If True, ask the user to indicate when action is completed.
+
+        # If True, when an action is executed,
+        # will ask the user to indicate when the action is completed.
         self.ask_user_for_action_completionp: bool = ask_completion
-        # Print trace messages related to bot actions.
+
+        # If True,
+        # will print trace messages related to bot actions.
         self.trace = trace
 
         self.execution_scenario = None
@@ -122,9 +134,22 @@ class Bot:
         return enabled_actions[int(selected_i)]
 
     # Execute action:
-    def execute_action(self, action: ss.Action):
+    def execute_action(self, action: ss.Action, successp: bool, conflicts: list[pp.LinkConflict]):
         # Tell bot to perform action, optionally waiting to confirm completion.
+        # Checks that action does not violate causal links that are active during execution.
+        # (but does not confirm effects).
+        # ToDo Document returned values in this and similar methods.
         if self.ask_user_for_action_completionp:
             input(f"{self }: Perform {action.operator} and hit return.")
         else:
             print(f"      Dispatches {action.operator}.")
+
+        # Observe state changes after the action completes.
+        changes = self.observe_state_change(self.monitor.current_state)
+        # Ask monitor to check the resulting state change against the active links.
+        # - This only needs to check states changes, not the complete state.
+        # - The active links DO NOT include the links produced by action,
+        #   which are handled in the next step.
+        successp, conflicts = self.monitor.check_state_change(changes, successp, conflicts)
+
+        return successp, conflicts

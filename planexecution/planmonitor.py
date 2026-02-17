@@ -61,9 +61,10 @@ class CausalLinkMonitor:
 
         return successp, conflicts
 
-# Process action that is about to be invoked.  Disable links consumed by action.
+# Update monitor for action that is about to be invoked.
+# - Disable links consumed by action.
 
-    def action_about_to_start(self, action: ss.Action):
+    def monitor_action_start(self, action: ss.Action):
         # Tells monitor that action just started.
         # Monitor removes the active causal links that action consumes.
 
@@ -85,15 +86,17 @@ class CausalLinkMonitor:
                     self.active_links.remove(rlk)
                     print(f'         {rlk}.')
 
-    # Process completed action.  Enable links produced by action and check:
+    # Update monitor for completed action.
+    # - Enable links produced by action.
+    #  - Check new links against state.
 
-    def check_completed_action(self, action: ss.Action, successp: bool, conflicts: list[pp.LinkConflict]):
+    def monitor_completed_action(self, action: ss.Action, successp: bool, conflicts: list[pp.LinkConflict]):
         # Tells monitor that action was just completed and asks to check effects.
         # Monitor activates causal links produced by action, and
         # checks the produced links against the current state.
         # Assume:
         # - Action was just completed.
-        # - State was observed and udpated since action produced its effects.
+        # - State was observed and updated since action produced its effects.
 
         # Activate each link that action produces.
         slinks = action.successor_links
