@@ -1,7 +1,7 @@
 import utils.utils as ut
 import bot
-import planexecution.planmonitor as lm
-from plancompilation.totalorderplan import TotalOrderPlan
+import planmonitor.planmonitor as lm
+from plans.totalorderplan import TotalOrderPlan
 import planexecution.executionscenario as es
 
 # Notes on user interaction:
@@ -34,10 +34,10 @@ class Dispatcher:
         # Enable the plan's start action, since it has no preconditions.
         self.enabled_actions = [par.start_action]
 
-        # Setup the monitor for the plan.
+        # Set up the monitor for the plan.
         self.monitor = lm.CausalLinkMonitor(total_order_plan)
 
-        # Setup the physical robot that performs the plan actions,
+        # Set up the physical robot that performs the plan actions,
         # and connect to the monitor that observes the action effects.
         self.bot = bot.Bot(name, self.monitor, False, False)
 

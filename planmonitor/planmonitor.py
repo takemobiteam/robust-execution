@@ -1,5 +1,6 @@
-import actionmodel.statespace as ss
-import plancompilation.partialorderplan as pp
+import actions.action as am
+import states.state as cs
+import plans.partialorderplan as pp
 
 # Causal Link Monitor:
 
@@ -14,10 +15,11 @@ class CausalLinkMonitor:
         self.active_links = [] # No active links until start action dispatched.
 
         # Encode the current_state as a mutable object.
-        self.current_state = ss.State([])
+        self.current_state = cs.State([])
 
     #  Update the record of the current state
 
+    # ToDo Not used?
     def current_value(self, variable: str):
         # Returns the assignment to variable in the current state.
         self.current_state.value(variable)
@@ -26,6 +28,7 @@ class CausalLinkMonitor:
         # Updates the assignment to variable in the current state to be value.
         self.current_state.assign_value(variable, value)
 
+    # ToDo fold into State (-> CurrentState).
     def update_state(self, changed_assignments: dict):
         # Updates the current state with changed_assignments.
 		# changed_assignments is a set of variable assignments.
@@ -34,6 +37,8 @@ class CausalLinkMonitor:
             self.assign_current_value(variable, value)
 
     # Check a state change against all active links.
+
+    # ToDo Split into two classes.  Above: state estimator, Below, Link Monitor
 
     def check_state_change(self, changed_assignments: dict, successp: bool, conflicts: list[pp.LinkConflict]):
         # Checks if any assignment in changed_assignments
@@ -64,7 +69,7 @@ class CausalLinkMonitor:
 # Update monitor for action that is about to be invoked.
 # - Disable links consumed by action.
 
-    def monitor_action_start(self, action: ss.Action):
+    def monitor_action_start(self, action: am.Action):
         # Tells monitor that action just started.
         # Monitor removes the active causal links that action consumes.
 
@@ -90,7 +95,7 @@ class CausalLinkMonitor:
     # - Enable links produced by action.
     #  - Check new links against state.
 
-    def monitor_completed_action(self, action: ss.Action, successp: bool, conflicts: list[pp.LinkConflict]):
+    def monitor_completed_action(self, action: am.Action, successp: bool, conflicts: list[pp.LinkConflict]):
         # Tells monitor that action was just completed and asks to check effects.
         # Monitor activates causal links produced by action, and
         # checks the produced links against the current state.

@@ -1,4 +1,5 @@
-import actionmodel.statespace as ss
+import actions.action as am
+import states.assignment as asn
 import plancompilation.extractpartialorderplan as ex
 import utils.utils as ut
 
@@ -13,7 +14,7 @@ class TotalOrderPlan:
     # - Its partial order plan is the set of plan actions, causal links that close preconditions,
     #   and orderings that are needed to resolve threats.
 
-    def __init__(self, name: str, action_sequence: list[ss.Action], start : list[ss.Assignment], goal: list[ss.Assignment]):
+    def __init__(self, name: str, action_sequence: list[am.Action], start : list[asn.Assignment], goal: list[asn.Assignment]):
         # Record the plan, encode it and extract its least commitment plan.
         self.name = name
         self.action_sequence = action_sequence
@@ -62,16 +63,16 @@ class TotalOrderPlan:
 
 # Encode a total order plan (start, goal and action sequence):
 
-def encode_total_order_plan(action_sequence: list[ss.Action], start: list[ss.Assignment], goal: list[ss.Assignment]) -> list[ss.Action]:
+def encode_total_order_plan(action_sequence: list[am.Action], start: list[asn.Assignment], goal: list[asn.Assignment]) -> list[am.Action]:
     # Adds to plan (action_sequence) its start and goal states as actions,
     # and records the location of each action.
     # Returns the encoded sequence.
 
     encoded_sequence = action_sequence[:]
-    start_action = ss.Action("start", [], start)
+    start_action = am.Action("start", [], start)
     encoded_sequence.insert(0, start_action)    # Add start action to the
                                                 # beginning of the plan.
-    goal_action = ss.Action("goal", goal, [])
+    goal_action = am.Action("goal", goal, [])
     encoded_sequence.append(goal_action)	    # Add goal action to the
                                                 # end of the plan.
     add_location_to_actions(encoded_sequence)   # Associate with each action its
@@ -79,7 +80,7 @@ def encode_total_order_plan(action_sequence: list[ss.Action], start: list[ss.Ass
 
     return encoded_sequence
 
-def add_location_to_actions(encoded_sequence: list[ss.Action]):
+def add_location_to_actions(encoded_sequence: list[am.Action]):
     # For each action in the total order plan, record its position.
     # Method called for effect only.
     i: int = 0

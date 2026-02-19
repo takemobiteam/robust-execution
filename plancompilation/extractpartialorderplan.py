@@ -1,11 +1,12 @@
-import actionmodel.statespace as ss
-import plancompilation.partialorderplan as pp
+import actions.action as am
+import states.assignment as asn
+import plans.partialorderplan as pp
 import plancompilation.extractminimalordering as mo
 
 
 # Extract a Partial Order Plan:
 
-def extract_partial_order_plan(plan_name: str, encoded_sequence: list[ss.Action]) -> tuple[pp.PartialOrderPlan, list[pp.Threat]]:
+def extract_partial_order_plan(plan_name: str, encoded_sequence: list[am.Action]) -> tuple[pp.PartialOrderPlan, list[pp.Threat]]:
     # Abstracts a total order plan to a partial order plan.
     # Takes as input the encoded_sequence of a total order plan,
     # with start and end operators added.
@@ -19,7 +20,7 @@ def extract_partial_order_plan(plan_name: str, encoded_sequence: list[ss.Action]
     return partial_order_plan, threats
 
 
-def extract_causal_links(plan_name: str, encoded_sequence: list[ss.Action]) -> list[pp.CausalLink]:
+def extract_causal_links(plan_name: str, encoded_sequence: list[am.Action]) -> list[pp.CausalLink]:
     # Extracts the goal / sub goal relationships of an encoded plan sequence,
     # in the form of “links” between operator preconditions and
     # effects that achieve these conditions.
@@ -63,7 +64,7 @@ def extract_causal_links(plan_name: str, encoded_sequence: list[ss.Action]) -> l
     return causal_links
 
 
-def extract_orderings(encoded_sequence: list[ss.Action], links: list[pp.CausalLink]) -> tuple[list[pp.Ordering], list[pp.Threat]]:
+def extract_orderings(encoded_sequence: list[am.Action], links: list[pp.CausalLink]) -> tuple[list[pp.Ordering], list[pp.Threat]]:
     # Given the causal links of an encoded plan sequence,
     # extract additional orderings needed to resolve potential threats.
     # An encoded_sequence is ill formed if it has a threat that can't be resolved
@@ -121,7 +122,7 @@ def extract_orderings(encoded_sequence: list[ss.Action], links: list[pp.CausalLi
     return minimal_orderings, threats
 
 
-def effects_violate_condition(condition: ss.Assignment, action: ss.Action) -> bool:
+def effects_violate_condition(condition: asn.Assignment, action: am.Action) -> bool:
     # Return True if action has an effect with the same variable as condition, but a different value.
     cvar = condition.variable
     cval = condition.value

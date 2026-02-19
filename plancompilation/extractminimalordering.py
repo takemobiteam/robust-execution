@@ -1,6 +1,6 @@
 import utils.directedgraph as dg
-import actionmodel.statespace as ss
-import plancompilation.partialorderplan as pp
+import actions.action as am
+import plans.partialorderplan as pp
 
 # Identifies a subset of the orderings of a partial order plan that, together with the causal links, imply all other orderings.
 # Used to ensure the plan is "least commitment".
@@ -19,7 +19,7 @@ def remove_dominated_orderings(graph: dg.DirectedGraph, orderings: list[pp.Order
     return marked_orderings(orderings,graph)
 
 
-def graph_for_actions_and_links(start: ss.Action, actions: list[ss.Action], links: list[pp.CausalLink]) -> dg.DirectedGraph:
+def graph_for_actions_and_links(start: am.Action, actions: list[am.Action], links: list[pp.CausalLink]) -> dg.DirectedGraph:
     # Returns a directed graph that represents connections between actions,
     # that are established by the causal links.
     # Causal links are labeled with priority 1.

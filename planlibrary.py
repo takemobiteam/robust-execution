@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
-import actionmodel.statespace as ss
-import plancompilation.totalorderplan as tp
+import states.state as ss
+import plans.totalorderplan as tp
 import planexecution.executionscenario as es
 import planexecution.plandispatcher as pd
 
@@ -171,7 +171,7 @@ class PlanLibrary:
         self.plan_library = dict()
         self.scenario_library = dict()
 
-    # Read Plans into Library
+    # Read plans into Library
 
     def readplan(self, plan_relative_path : str) -> tp.TotalOrderPlan:
         # Creates a python plan object and registers in plan library.
@@ -291,7 +291,7 @@ def print_scenario_results(scenario_name: str, plan_name: str, end_state, succes
         print(f"      {c1}")
 
 
-# ***  Creating Total Order Plans ***
+# ***  Creating Total Order plans ***
 
 def dict2total_order_plan (dict_plan)-> (str, tp.TotalOrderPlan):
     # Converts a dictionary description of a total order plan,

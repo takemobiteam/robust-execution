@@ -1,11 +1,12 @@
-import actionmodel.statespace as ss
+import actions.action as am
+import states.assignment as asn
 import typing
 
-# Partial Order Plans
+# Partial Order plans
 
 class CausalLink:
     # Describes the actions that produce and rely upon a condition.
-    def __init__(self, condition: ss.Assignment, producer: ss.Action or None, consumer: ss.Action):
+    def __init__(self, condition: asn.Assignment, producer: am.Action or None, consumer: am.Action):
         self.condition = condition  # An assignment
         self.producer = producer  # Action with an effect that is condition.
         self.consumer = consumer  # Action with a precondition that is condition.
@@ -25,7 +26,7 @@ class LinkConflict:
 
 class Ordering:
     # Specifies a partial order between actions in a plan.
-    def __init__(self, predecessor: ss.Action, successor: ss.Action):
+    def __init__(self, predecessor: am.Action, successor: am.Action):
         self.predecessor = predecessor  # Action that occurs first.
         self.successor = successor  # Action that occurs later.
 
@@ -34,7 +35,7 @@ class Ordering:
 
 class Threat:
     # Specifies the threat of an action to a causal link.
-    def __init__(self, causal_link: CausalLink, action: ss.Action):
+    def __init__(self, causal_link: CausalLink, action: am.Action):
         self.link = causal_link  # Causal link whose condition is threatened.
         self.action = action  # Action that threatens the link.
 
@@ -49,8 +50,8 @@ class PartialOrderPlan:
     # and partial orders between actions, needed to resolve threats.
     # Start and goal assignments are encoded as two operators.
 
-    def __init__(self, name: str, actions: list[ss.Action], links: list[CausalLink], orderings: list[Ordering],
-                 start_action: ss.Action):
+    def __init__(self, name: str, actions: list[am.Action], links: list[CausalLink], orderings: list[Ordering],
+                 start_action: am.Action):
         # operator is a symbol, preconditions and effects are sets of assignments.
         self.name = name
         self.actions = actions  # Set of all operator instantiations of plan.
