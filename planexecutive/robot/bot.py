@@ -1,8 +1,8 @@
 import utils.utils as ut
-import states.state as ss
-import planexecution.executionscenario as es
-import planmonitor.planmonitor as lm
-import plans.partialorderplan as pp
+import model.states.state as ss
+import planexecutive.executionscenario as es
+import planexecutive.monitor.planmonitor as lm
+import model.plans.partialorderplan as pp
 
 # A physical (ro)Bot that mediates between the environment
 # and agent (a homunculus).

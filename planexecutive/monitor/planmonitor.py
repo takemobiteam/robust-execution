@@ -1,6 +1,6 @@
-import actions.action as am
-import states.state as cs
-import plans.partialorderplan as pp
+import model.actions.action as am
+import planexecutive.stateestimator.currentstate as cs
+import model.plans.partialorderplan as pp
 
 # Causal Link Monitor:
 
@@ -9,36 +9,15 @@ class CausalLinkMonitor:
     # Current state starts with start_assignments.
 
     def __init__(self, total_order_plan, trace = True):
+        self.trace = trace  # Should we trace monitoring?
         p = total_order_plan.partial_order_plan
-        self.trace = trace # Should we trace monitoring?
         self.links = p.links # All links to be monitored.
         self.active_links = [] # No active links until start action dispatched.
 
         # Encode the current_state as a mutable object.
-        self.current_state = cs.State([])
-
-    #  Update the record of the current state
-
-    # ToDo Not used?
-    def current_value(self, variable: str):
-        # Returns the assignment to variable in the current state.
-        self.current_state.value(variable)
-
-    def assign_current_value(self, variable: str, value: str):
-        # Updates the assignment to variable in the current state to be value.
-        self.current_state.assign_value(variable, value)
-
-    # ToDo fold into State (-> CurrentState).
-    def update_state(self, changed_assignments: dict):
-        # Updates the current state with changed_assignments.
-		# changed_assignments is a set of variable assignments.
-        # Called for effect.
-        for variable, value in changed_assignments.items():
-            self.assign_current_value(variable, value)
+        self.current_state = cs.CurrentState([],self.trace)
 
     # Check a state change against all active links.
-
-    # ToDo Split into two classes.  Above: state estimator, Below, Link Monitor
 
     def check_state_change(self, changed_assignments: dict, successp: bool, conflicts: list[pp.LinkConflict]):
         # Checks if any assignment in changed_assignments

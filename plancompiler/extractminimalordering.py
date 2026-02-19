@@ -1,6 +1,6 @@
 import utils.directedgraph as dg
-import actions.action as am
-import plans.partialorderplan as pp
+import model.actions.action as am
+import model.plans.partialorderplan as pp
 
 # Identifies a subset of the orderings of a partial order plan that, together with the causal links, imply all other orderings.
 # Used to ensure the plan is "least commitment".

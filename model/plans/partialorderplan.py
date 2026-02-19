@@ -1,5 +1,5 @@
-import actions.action as am
-import states.assignment as asn
+import model.actions.action as am
+import model.states.assignment as asn
 import typing
 
 # Partial Order plans

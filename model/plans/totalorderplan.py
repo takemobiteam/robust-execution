@@ -1,6 +1,6 @@
-import actions.action as am
-import states.assignment as asn
-import plancompilation.extractpartialorderplan as ex
+import model.actions.action as am
+import model.states.assignment as asn
+import plancompiler.extractpartialorderplan as ex
 import utils.utils as ut
 
 # Total Order Plan:

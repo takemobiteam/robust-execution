@@ -1,5 +1,5 @@
 import utils.utils as ut
-import states.assignment as asn
+import model.states.assignment as asn
 
 # Classes that represent a state space (States and Operators):
 

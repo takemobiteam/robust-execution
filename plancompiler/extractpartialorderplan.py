@@ -1,7 +1,7 @@
-import actions.action as am
-import states.assignment as asn
-import plans.partialorderplan as pp
-import plancompilation.extractminimalordering as mo
+import model.actions.action as am
+import model.states.assignment as asn
+import model.plans.partialorderplan as pp
+import plancompiler.extractminimalordering as mo
 
 
 # Extract a Partial Order Plan:

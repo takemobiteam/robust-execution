@@ -1,9 +1,9 @@
 import json
 from pathlib import Path
-import states.state as ss
-import plans.totalorderplan as tp
-import planexecution.executionscenario as es
-import planexecution.plandispatcher as pd
+import model.states.state as ss
+import model.plans.totalorderplan as tp
+import planexecutive.executionscenario as es
+import planexecutive.dispatcher.plandispatcher as pd
 
 # The plan library reads total order plan and execution scenario descriptions,
 # creates corresponding TotalOrderPlan and ExecutionScenario objects,

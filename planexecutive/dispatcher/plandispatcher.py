@@ -1,8 +1,8 @@
 import utils.utils as ut
-import bot
-import planmonitor.planmonitor as lm
-from plans.totalorderplan import TotalOrderPlan
-import planexecution.executionscenario as es
+from planexecutive.robot import bot
+import planexecutive.monitor.planmonitor as lm
+from model.plans.totalorderplan import TotalOrderPlan
+import planexecutive.executionscenario as es
 
 # Notes on user interaction:
 
