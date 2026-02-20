@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
-import model.states.state as ss
+import model.states.assignment as asn
+import model.actions.action as at
 import model.plans.totalorderplan as tp
 import planexecutive.executionscenario as es
 import planexecutive.dispatcher.plandispatcher as pd
@@ -308,7 +309,7 @@ def dict2assignments (dict_assignments):
     # dict_assignments, to a python assignments object.
     asgns = list()
     for var, val in dict_assignments.items():
-        asgn = ss.Assignment(var, val)
+        asgn = asn.Assignment(var, val)
         asgns.append(asgn)
     return asgns
 
@@ -321,13 +322,13 @@ def dict2plan_sequence (dict_sequence):
         pseq.append(action)
     return pseq
     
-def dict2action (dict_action)->ss.Action:
+def dict2action (dict_action)->at.Action:
     # Converts a dictionary description of an action,
     # dict_action, to a python action object.
     action_name: str = dict_action["action"]
     pre = dict2assignments(dict_action["precondition"])
     eff = dict2assignments(dict_action["effect"])
-    return ss.Action(action_name, pre, eff)
+    return at.Action(action_name, pre, eff)
 
 
 # ***  Creating Plan Execution Sequences ***

@@ -1,5 +1,6 @@
 import utils.utils as ut
-import model.states.state as ss
+import model.states.state as st
+import model.actions.action as at
 import planexecutive.executionscenario as es
 import planexecutive.monitor.planmonitor as lm
 import model.plans.partialorderplan as pp
@@ -49,7 +50,7 @@ class Bot:
         self.index = 0
 
     # Observe state:
-    def observe_state_change(self, current_state: ss.State) -> dict:
+    def observe_state_change(self, current_state: st.State) -> dict:
         # Read the new state.
         # Return changed_assignments relative to current_state.
         if self.execution_scenario:
@@ -69,7 +70,7 @@ class Bot:
         return current_stage.state_change
 
     @staticmethod
-    def user_observe_state_change(current_state: ss.State) -> dict:
+    def user_observe_state_change(current_state: st.State) -> dict:
         # Ask the user for the next observed state.
         print(f'Current state: {current_state}')
         print(f'   What changed?')
@@ -85,7 +86,7 @@ class Bot:
         return state_change
 
     # Select an enabled action:
-    def select_enabled_action(self, enabled_actions: list[ss.Action])-> ss.Action or None:
+    def select_enabled_action(self, enabled_actions: list[at.Action])-> at.Action or None:
         # Select and return an enabled action, returning None if no enabled action.
         if enabled_actions == list():
 
@@ -117,7 +118,7 @@ class Bot:
         return None
 
     @staticmethod
-    def user_select_enabled_action(enabled_actions: list[ss.Action])-> ss.Action or None:
+    def user_select_enabled_action(enabled_actions: list[at.Action])-> at.Action or None:
         # Ask user to select an enabled action, returning None if no enabled action.
         while True:
             max_i: int = len(enabled_actions) - 1
@@ -134,7 +135,7 @@ class Bot:
         return enabled_actions[int(selected_i)]
 
     # Execute action:
-    def execute_action(self, action: ss.Action, successp: bool, conflicts: list[pp.LinkConflict]):
+    def execute_action(self, action: at.Action, successp: bool, conflicts: list[pp.LinkConflict]):
         # Tell bot to perform action, optionally waiting to confirm completion.
         # Checks that action does not violate causal links that are active during execution.
         # (but does not confirm effects).
