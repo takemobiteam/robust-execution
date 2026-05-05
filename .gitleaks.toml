@@ -1,0 +1,69 @@
+# Gitleaks Configuration File
+# This configuration extends the default Gitleaks rules
+# For full default config, see: https://github.com/gitleaks/gitleaks/blob/master/config/gitleaks.toml
+
+
+title = "EKS Repository Gitleaks Configuration"
+
+[extend]
+# Use the default Gitleaks rules as a base
+useDefault = true
+
+# Allowlist configuration to exclude false positives
+[allowlist]
+description = "Allowlisted files and paths"
+
+# Paths to exclude from scanning
+paths = [
+    '''\.github/workflows/.*\.yml''',  # Exclude workflow files if needed (remove if you want to scan them)
+    '''\.git/''',                       # Exclude .git directory
+    '''README\.md''',                   # Exclude README files
+    '''.*test.*''',                     # Exclude test files
+    '''.*\.example''',                  # Exclude example files
+    '''\.gitleaks\.toml''',            # Exclude this config file
+]
+
+# Regular expressions to exclude from detection
+regexes = [
+    # Add patterns here for known false positives
+    # Example: '''AKIAIOSFODNN7EXAMPLE'''  # AWS example key from documentation
+]
+
+# Commit SHAs to exclude (useful for commits before Gitleaks implementation)
+commits = [
+    # Add commit SHAs to exclude from scanning
+]
+
+# Stop words - if a match contains these words, it's likely a false positive
+stopwords = [
+    # Add stop words here if needed
+]
+
+# Custom rules (optional - examples below)
+# Uncomment and modify as needed
+
+# [[rules]]
+# id = "wazuh-api-key"
+# description = "Wazuh API Key"
+# regex = '''wazuh[_-]?api[_-]?key['\"]?\s*[:=]\s*['\"]?([a-zA-Z0-9]{32,})'''
+# tags = ["key", "wazuh"]
+
+# [[rules]]
+# id = "eks-cluster-token"
+# description = "EKS Cluster Token"
+# regex = '''k8s-aws-v1\.[a-zA-Z0-9-_]+'''
+# tags = ["token", "kubernetes", "eks"]
+
+# Entropy-based detection for generic secrets
+[[rules]]
+id = "generic-high-entropy-string"
+description = "Generic High Entropy String (possible secret)"
+regex = '''[a-zA-Z0-9/+=]{32,}'''
+entropy = 4.5
+secretGroup = 1
+tags = ["entropy", "generic"]
+
+[allowlist.regexTarget]
+# Target-specific allowlisting (matches, paths, or commits)
+# Example: only apply allowlist to specific file types
+# fileExtensions = ["md", "txt"]
